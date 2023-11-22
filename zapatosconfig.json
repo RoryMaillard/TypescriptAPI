@@ -1,0 +1,12 @@
+{
+    "db": {
+      "connectionString": "postgres://omtdleqx:KxvlsvLWzE4dNujsksxXYToVqDJI72pC@flora.db.elephantsql.com/omtdleqx"
+    },
+    "outDir": "./src",
+    "schemas": {
+      "public": {
+        "include": ["users"],
+        "exclude": []
+      }
+    }
+  }

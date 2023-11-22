@@ -1,5 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify"
 import { IUser } from "interfaces"
+import type * as s from 'zapatos/schema'
+import * as db from 'zapatos/db'
+import pool from '../db/pgPool'
 
 const staticUsers: IUser[] = [
   {
@@ -16,72 +19,34 @@ const staticUsers: IUser[] = [
   },
 ]
 
-export const listUsers = async (
- request: FastifyRequest, 
- reply: FastifyReply) => {
-
-  Promise.resolve(staticUsers)
-  .then((users) => {
-	reply.send({ data: users })
-  })
+export const listUsers = 
+  async (request: FastifyRequest, reply: FastifyReply) => {
+    return db.sql<s.users.SQL, s.users.Selectable[]>`SELECT * FROM ${"users"}`
+    .run(pool)
+    .then((users) => ({ data: users }))
+    // Or .then((users) => reply.send({ data: users }))
 }
 
-export const getUserById = async (
-    request: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
-  ) => {
-    try {
-      const userId = parseInt(request.params.id, 10); // Convertir l'ID en nombre entier
-      const user = staticUsers.find((u) => u.id === userId);
-  
-      if (!user) {
-        reply.code(404).send({ error: "Utilisateur non trouvé" });
-        return;
-      }
-  
-      reply.send({ data: user });
-    } catch (error) {
-      reply.code(500).send({ error: "Erreur serveur interne" });
-    }
-};
-export const addUser = async (
-    request: FastifyRequest<{ Body: { name: string } }>, // Mettez à jour cette ligne
-    reply: FastifyReply
-  ) => {
-    try {
-      const newUser: IUser = {
-        id: staticUsers.length + 1,
-        name: request.body.name,
-      };
-  
-      staticUsers.push(newUser);
-  
-      reply.code(201).send({ data: newUser });
-    } catch (error) {
-      reply.code(500).send({ error: "Erreur serveur interne" });
-    }
-};
+export const getUserById = 
+  async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const userId = request.params.id;
+    return db.sql<s.users.SQL, s.users.Selectable[]>`SELECT * FROM ${"users"} WHERE user_id = ${db.param(userId)}`
+    .run(pool)
+    .then((user) => ({ data: user }))
+}
 
-export const updateUserById = async (
-    request: FastifyRequest<{ Params: { id: string }; Body: { score?: number } }>,
-    reply: FastifyReply
-  ) => {
-    try {
-      const userId = parseInt(request.params.id, 10);
-      const userIndex = staticUsers.findIndex((u) => u.id === userId);
-  
-      if (userIndex === -1) {
-        reply.code(404).send({ error: "Utilisateur non trouvé" });
-        return;
-      }
-  
-      // Mettez à jour l'utilisateur avec le nouveau score s'il est fourni dans le corps de la requête
-      if (request.body.score !== undefined) {
-        staticUsers[userIndex].score = request.body.score;
-      }
-  
-      reply.send({ data: staticUsers[userIndex] });
-    } catch (error) {
-      reply.code(500).send({ error: "Erreur serveur interne" });
-    }
-};
+export const addUser = 
+  async (request: FastifyRequest<{ Body: { name: string } }>, reply: FastifyReply) => {
+    const name = request.body.name;
+    return db.sql<s.users.SQL, s.users.Selectable[]>`INSERT INTO users (name) VALUES (${db.param(name)})`
+    .run(pool)
+}
+
+export const updateUserById = 
+  async (request: FastifyRequest<{ Params: { id: string }; Body: { score?: number } }>, reply: FastifyReply) => {
+    const userId = request.params.id;
+    if (request.body.score){
+      return db.sql<s.users.SQL, s.users.Selectable[]>`UPDATE users SET score = ${db.param(request.body.score)} WHERE user_id = ${db.param(userId)}`
+    .run(pool)
+    } 
+}
