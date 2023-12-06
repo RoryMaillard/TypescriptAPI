@@ -1,23 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify"
-import { IUser } from "interfaces"
 import type * as s from 'zapatos/schema'
 import * as db from 'zapatos/db'
 import pool from '../db/pgPool'
 
-const staticUsers: IUser[] = [
-  {
-	id: 1,
-	name: 'Joyce Byers'
-  },
-  {
-	id: 2,
-	name: 'Arnaud Parion'
-  },
-  {
-	id: 3,
-	name: 'Rory Maillard'
-  },
-]
 
 export const listUsers = 
   async (request: FastifyRequest, reply: FastifyReply) => {

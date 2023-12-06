@@ -1,0 +1,13 @@
+{
+    "db": {
+      "connectionString": "postgres://spllbbuh:j4ym_d4pHja53zcVF-kRr8bq_Yiyh01j@tai.db.elephantsql.com/spllbbuh"
+    },
+    "outDir": "./",
+    "outExt": ".ts",
+    "schemas": {
+      "public": {
+        "include": ["Creature"],
+        "exclude": []
+      }
+    }
+  }
