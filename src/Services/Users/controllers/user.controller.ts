@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify"
 import type * as s from 'zapatos/schema'
 import * as db from 'zapatos/db'
-import pool from '../db/pgPool'
+import pool from '../../../../db/pgPool'
 
 
 export const listUsers = 

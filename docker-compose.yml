@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  users-api:
+    build: ./users-api
+    ports:
+      - "50000:5000"
+    volumes:
+      - .:/app
+  db:
+    image: postgres:12.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    ports:
+      - "5432:5432"

@@ -1,0 +1,12 @@
+{
+    "db": {
+      "connectionString": "postgres://xddfvlgs:GC8UJfSASNIExvQs3Cm5dJ8MQKwt4bL8@flora.db.elephantsql.com/xddfvlgs"
+    },
+    "outDir": "./src",
+    "schemas": {
+      "public": {
+        "include": ["users","players","creatures","rounds","matches"],
+        "exclude": []
+      }
+    }
+  }
