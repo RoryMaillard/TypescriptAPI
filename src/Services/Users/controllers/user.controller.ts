@@ -20,6 +20,14 @@ export const getUserById =
     .then((user) => ({ data: user }))
 }
 
+export const getUsernameById = 
+  async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const userId = request.params.id;
+    return db.sql<s.users.SQL, s.users.Selectable[]>`SELECT username FROM ${"users"} WHERE id = ${db.param(userId)}`
+    .run(pool)
+    .then((username) => ({ data: username }))
+}
+
 export const addUser = 
   async (request: FastifyRequest<{ Body: { username: string, password: string, email: string } }>, reply: FastifyReply) => {
     return db.sql<s.users.SQL, s.users.Selectable[]>`INSERT INTO users (username, password, email) VALUES (${db.param(request.body.username)}, ${db.param(request.body.password)}, ${db.param(request.body.email)})`

@@ -19,6 +19,15 @@ export const getCreatureById =
     .run(pool)
     .then((creature) => ({ data: creature }))
 }
+export const getCreaturesById = 
+async (request: FastifyRequest<{Params: { ids: string } }>, reply: FastifyReply) => {
+  if (request.params.ids){
+    const creaturesId = request.params.ids.split(',').map(Number);
+    return db.sql<s.creatures.SQL, s.creatures.Selectable[]>`SELECT * FROM ${"creatures"} WHERE id IN (${db.vals(creaturesId)})`
+    .run(pool)
+    .then((creatures) => ({ data: creatures }))
+  } 
+}
 export const getUserPurchasableCreatures = 
   async (request: FastifyRequest<{Params: { userCreaturesId: string } }>, reply: FastifyReply) => {
     if (request.params.userCreaturesId){

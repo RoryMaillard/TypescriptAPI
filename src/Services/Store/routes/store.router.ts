@@ -15,6 +15,11 @@ async function storeRouter(fastify: FastifyInstance) {
   });
   fastify.route({
     method: 'GET',
+    url: '/creatures/:ids',
+    handler: controllers.getCreaturesById,
+  });
+  fastify.route({
+    method: 'GET',
     url: '/purchase/:userCreaturesId',
     handler: controllers.getUserPurchasableCreatures,
   });
