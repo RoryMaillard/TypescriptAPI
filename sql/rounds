@@ -1,0 +1,1 @@
+CREATE TABLE Rounds ( id SERIAL PRIMARY KEY, creaturePlayer1 INT REFERENCES Creatures(id), creaturePlayer2 INT REFERENCES Creatures(id), status VARCHAR(10), winner INT REFERENCES Players(id))

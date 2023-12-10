@@ -1,0 +1,19 @@
+CREATE TABLE Creatures ( id SERIAL PRIMARY KEY, name VARCHAR(15), hp INT, attack INT, type VARCHAR(10), price INT)
+
+INSERT INTO Creatures (name, hp, attack, type, price)
+ VALUES
+ ('Rust', 13, 87, 'offensive', 100),
+ ('JavaScript', 64, 61, 'defensive', 125),
+ ('Elixir', 2, 76, 'offensive', 78),
+ ('Python', 50, 67, 'defensive', 117),
+ ('Clojure', 1, 75, 'offensive', 76),
+ ('Bash', 32, 58, 'defensive', 90),
+ ('Julia', 1, 73, 'offensive', 74),
+ ('Java', 31, 46, 'defensive', 77),
+ ('Delphi', 3, 66, 'offensive', 69),
+ ('C#', 28, 63, 'offensive', 91),
+ ('OCaml', 1, 47, 'defensive', 0),
+ ('Matlab', 4, 19, 'offensive', 0),
+ ('Cobol', 1, 20, 'offensive', 0),
+ ('Fortran', 1, 26, 'offensive', 0),
+ ('Groovy', 3, 31, 'offensive', 0);

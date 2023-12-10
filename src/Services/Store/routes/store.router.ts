@@ -6,22 +6,22 @@ async function storeRouter(fastify: FastifyInstance) {
   fastify.route({
 	method: 'GET',
 	url: '/',
-	handler: controllers.listUsers,
+	handler: controllers.getCreatures,
   });
   fastify.route({
     method: 'GET',
     url: '/:id',
-    handler: controllers.getUserById,
+    handler: controllers.getCreatureById,
   });
   fastify.route({
-    method: 'POST',
-    url: '/',
-    handler: controllers.addUser,
+    method: 'GET',
+    url: '/purchase/:userCreaturesId',
+    handler: controllers.getUserPurchasableCreatures,
   });
   fastify.route({
-    method: 'PUT',
-    url: '/:id',
-    handler: controllers.updateUserById,
+    method: 'GET',
+    url: '/purchase/:userCreaturesId/:id',
+    handler: controllers.getUserPurchasableCreaturesById,
   });
 }
 
