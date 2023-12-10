@@ -1,1 +1,8 @@
 CREATE TABLE Users ( id SERIAL PRIMARY KEY, username VARCHAR(15), password VARCHAR(30), email VARCHAR(30))
+
+INSERT INTO Users (username, password, email)
+ VALUES
+ ('John', 'John', 'John@gmail.com'),
+ ('Alex', 'Alex', 'Alex@gmail.com'),
+ ('Simon', 'Simon', 'Simon@gmail.com'),
+ ('Sofia', 'Sofia', 'Sofia@gmail.com');

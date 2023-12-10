@@ -6,7 +6,7 @@ async function userRouter(fastify: FastifyInstance) {
   fastify.route({
 	method: 'GET',
 	url: '/',
-	handler: controllers.listUsers,
+	handler: controllers.getUsers,
   });
   fastify.route({
     method: 'GET',
