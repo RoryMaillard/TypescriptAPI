@@ -1,1 +1,8 @@
 CREATE TABLE Players ( id INT PRIMARY KEY REFERENCES Users(id), creatures VARCHAR(300), credits INT, wins INT, loss INT, score INT, badges VARCHAR(300))
+
+INSERT INTO Players (id, creatures, credits, wins, loss, score, badges)
+ VALUES
+ (1, '56,57,58,59,60', 0, 0, 0, 0, ''),
+ (2, '56,57,58,59,60,46,47,48', 140, 12, 8, 128, '1,2,3,4,5'),
+ (3, '56,57,58,59,60,45,46,47,48,49,50,51,52,53,54,55', 8, 12, 30, 112, '1,3,6'),
+ (4, '56,57,58,59,60', 0, 0, 0, 0, '');

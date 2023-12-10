@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev src/Services/Store/index.ts",
+    "dev": "ts-node-dev src/Services/Users/index.ts",
+    "store": "ts-node-dev src/Services/Store/index.ts",
+    "user": "ts-node-dev src/Services/Users/index.ts",
     "start": "node build/index.js"
   },
   "keywords": [],
@@ -17,6 +19,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "axios": "^1.6.2",
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "pg": "^8.11.3",
