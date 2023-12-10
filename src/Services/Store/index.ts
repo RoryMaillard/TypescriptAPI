@@ -5,7 +5,7 @@ import {config} from "dotenv";
 const port = 5001;
 //const host = '0.0.0.0';
 
-config({path: `store.env`})
+config({path: `.env`})
 const startServer = async () => {
   try {
 	const server = fastify()

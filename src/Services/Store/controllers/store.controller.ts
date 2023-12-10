@@ -4,34 +4,37 @@ import * as db from 'zapatos/db'
 import pool from '../db/pgPool'
 
 
-export const listUsers = 
+export const getCreatures = 
   async (request: FastifyRequest, reply: FastifyReply) => {
-    return db.sql<s.users.SQL, s.users.Selectable[]>`SELECT * FROM ${"users"}`
+    return db.sql<s.creatures.SQL, s.creatures.Selectable[]>`SELECT * FROM ${"creatures"}`
     .run(pool)
-    .then((users) => ({ data: users }))
+    .then((creatures) => ({ data: creatures }))
     // Or .then((users) => reply.send({ data: users }))
 }
 
-export const getUserById = 
+export const getCreatureById = 
   async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
-    const userId = request.params.id;
-    return db.sql<s.users.SQL, s.users.Selectable[]>`SELECT * FROM ${"users"} WHERE user_id = ${db.param(userId)}`
+    const creatureId = request.params.id;
+    return db.sql<s.creatures.SQL, s.creatures.Selectable[]>`SELECT * FROM ${"creatures"} WHERE id = ${db.param(creatureId)}`
     .run(pool)
-    .then((user) => ({ data: user }))
+    .then((creature) => ({ data: creature }))
 }
-
-export const addUser = 
-  async (request: FastifyRequest<{ Body: { name: string } }>, reply: FastifyReply) => {
-    const name = request.body.name;
-    return db.sql<s.users.SQL, s.users.Selectable[]>`INSERT INTO users (name) VALUES (${db.param(name)})`
-    .run(pool)
+export const getUserPurchasableCreatures = 
+  async (request: FastifyRequest<{Params: { userCreaturesId: string } }>, reply: FastifyReply) => {
+    if (request.params.userCreaturesId){
+      const userCreaturesId = request.params.userCreaturesId.split(',').map(Number);
+      return db.sql<s.creatures.SQL, s.creatures.Selectable[]>`SELECT * FROM ${"creatures"} WHERE id NOT IN (${db.vals(userCreaturesId)})`
+      .run(pool)
+      .then((creatures) => ({ data: creatures }))
+    } 
 }
-
-export const updateUserById = 
-  async (request: FastifyRequest<{ Params: { id: string }; Body: { score?: number } }>, reply: FastifyReply) => {
-    const userId = request.params.id;
-    if (request.body.score){
-      return db.sql<s.users.SQL, s.users.Selectable[]>`UPDATE users SET score = ${db.param(request.body.score)} WHERE user_id = ${db.param(userId)}`
-    .run(pool)
+export const getUserPurchasableCreaturesById = 
+  async (request: FastifyRequest<{ Params: { id: string, userCreaturesId: string}}>, reply: FastifyReply) => {
+    if (request.params.userCreaturesId){
+      const creatureId = request.params.id;
+      const userCreaturesId = request.params.userCreaturesId.split(',').map(Number);
+      return db.sql<s.creatures.SQL, s.creatures.Selectable[]>`SELECT * FROM ${"creatures"} WHERE id NOT IN (${db.vals(userCreaturesId)}) AND id = ${db.param(creatureId)}`
+      .run(pool)
+      .then((creature) => ({ data: creature }))
     } 
 }
