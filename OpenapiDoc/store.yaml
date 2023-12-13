@@ -1,0 +1,142 @@
+openapi: 3.1.0
+info:
+  title: Store API
+  description: This is the API of the Store service
+  version: 1.0.0
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: players
+    description: Operations available to regular players
+paths:
+  /api/store:
+    get:
+      tags:
+        - admins
+      summary: get all the creatures
+      description: get all the creatures
+      operationId: getCreatures
+      responses:
+        "200":
+          description: List of all creatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/store/{id}:
+    get:
+      tags:
+        - players
+      summary: get creature info with id
+      description: get creature info with id
+      operationId: getCreatureById
+      parameters:
+        - name : id
+          in : path
+          description: Creature ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: creature info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Creature'
+  /api/store/creatures/{ids}:
+    get:
+      tags:
+        - players
+      summary: get a List of creatures from a list of ids
+      description: get a List of creatures from a list of ids
+      operationId: getCreaturesById
+      parameters:
+        - name: ids
+          in: path
+          description: creature ids seperated by commas
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: creatures list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/store/purchase/{userCreaturesIds}:
+    get:
+      tags:
+        - players
+      summary: get all the purchasable creatures based of a list of already owned creatures
+      description: get all the purchasable creatures based of a list of already owned creatures
+      operationId: getUserPurchasableCreatures
+      parameters:
+        - name: userCreaturesIds
+          in: path
+          description: creature ids seperated by commas of the creatures the user already owns
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of creatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/store/purchase/{userCreaturesId}/{id}:
+    get:
+      tags:
+        - players
+      summary: get info on one creature of the purchasable creatures
+      description: get info on one creature of the purchasable creatures
+      operationId: getUserPurchasableCreaturesById
+      parameters:
+        - name: userCreaturesIds
+          in: path
+          description: creature ids seperated by commas of the creatures the user already owns
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: creature ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: creature info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Creature'
+components:
+  schemas:
+    CreaturesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Creature'
+    Creature:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        name:
+          type: string
+          example: "c#"
+        hp:
+          type: int
+          example: 20
+        attack:
+          type: int
+          example: 80
+        type:
+          type: string
+          example: "Offensive"
+        price:
+          type: int
+          example: 90

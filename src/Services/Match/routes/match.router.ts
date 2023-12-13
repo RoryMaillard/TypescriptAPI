@@ -21,12 +21,12 @@ async function matchRouter(fastify: FastifyInstance) {
   })
   fastify.route({
     method: 'POST',
-    url: '/createMatch',
+    url: '/creatematch',
     handler: controllers.createMatch,
   });
   fastify.route({
     method: 'DELETE',
-    url: '/delete/:id',
+    url: '/:id',
     handler: controllers.deleteMatch,
   });
   fastify.route({
@@ -40,7 +40,7 @@ async function matchRouter(fastify: FastifyInstance) {
     handler: controllers.getRoundById,
   });
   fastify.route({
-    method: 'GET',
+    method: 'PUT',
     url: '/rounds/:id/outcome/:player1/:player2',
     handler: controllers.calculateOutcome,
   });

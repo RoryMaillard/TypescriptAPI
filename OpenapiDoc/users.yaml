@@ -1,0 +1,274 @@
+openapi: 3.1.0
+info:
+  title: Users API
+  description: This is the API of the Users service
+  version: 1.0.0
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: players
+    description: Operations available to regular players
+paths:
+  /api/user:
+    get:
+      tags:
+        - admins
+      summary: get all the users
+      description: get all the users
+      operationId: getUsers
+      responses:
+        "200":
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+  /api/user/{id}:
+    get:
+      tags:
+        - players
+      summary: get user info with id
+      description: get user info with id
+      operationId: getUserById
+      parameters:
+        - name : id
+          in : path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - admins
+      summary: add a new user
+      description: Adds a new user
+      operationId: addUser
+      requestBody:
+        description: item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User created
+    put:
+      tags:
+        - admins
+      summary: Update a user
+      description: Change values for a user
+      operationId: addUser
+      requestBody:
+        description: parameters to change
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User created
+  /api/user/{id}/username:
+    get:
+      tags:
+        - players
+      summary: get a player's username from id
+      description: get a player's username from id
+      operationId: getUsernameById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Username
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "John"
+  /api/user/player:
+    get:
+      tags:
+        - admin
+      summary: get all the players
+      description: get all the players
+      operationId: getPlayers
+      responses:
+        "200":
+          description: List of all players
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllPlayers'
+  /api/user/player/{id}:
+    get:
+      tags:
+        - players
+      summary: get player info with id
+      description: get player info with id
+      operationId: getPlayerById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Player info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+  /api/user/player/{id}/creatures:
+    get:
+      tags:
+        - players
+      summary: get player creatures
+      description: get player creatures
+      operationId: getPlayerCreatures
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of player's creatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/user/player/{id}/purchasableCreatures:
+    get:
+      tags:
+        - players
+      summary: get creatures that can be purchased by the player
+      description: get creatures that can be purchased by the player
+      operationId: getPlayerPurchasableCreatures
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of creatures that the player can purchase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/user/player/{id}/purchaseCreature/{creatureId}:
+    get:
+      tags:
+        - players
+      summary: get creatures that can be purchased by the player
+      description: get creatures that can be purchased by the player
+      operationId: getPlayerPurchasableCreatures
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+        - name: creatureId
+          in: path
+          description: Creature ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Creature Purchased
+        "400":
+          description: Not enough credits
+components:
+  schemas:
+    AllUsers:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        username:
+          type: string
+          example: "John"
+        password:
+          type: string
+          example: "1234567api"
+        email:
+          type: string
+          example: "john@gmail.com"
+    AllPlayers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Player'
+    Player:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        creatures:
+          type: string
+          example: "12,51,41,2,5"
+        credits:
+          type: int
+          example: 300
+        wins:
+          type: int
+          example: 12
+        loss:
+          type: int
+          example : 8
+        score:
+          type: int
+          example: 280
+        badges:
+          type: string
+          example : "1,2,3,4,5"
+    CreaturesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Creature'
+    Creature:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        name:
+          type: string
+          example: "c#"
+        hp:
+          type: int
+          example: 20
+        attack:
+          type: int
+          example: 80
+        type:
+          type: string
+          example: "Offensive"
+        price:
+          type: int
+          example: 90
