@@ -1,12 +1,31 @@
 version: '3.8'
 
 services:
-  users-api:
-    build: ./users-api
+  users:
+    build:
+      context: .
+      dockerfile: Dockerfile.users
     ports:
       - "5000:5000"
     volumes:
       - .:/app
+    depends_on:
+      - db
+      - store
+    command: npm run start:users
+
+  store:
+    build:
+      context: .
+      dockerfile: Dockerfile.store
+    ports:
+      - "5001:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    command: npm run start:store
+
   db:
     image: postgres:12.1-alpine
     environment:
@@ -15,12 +34,13 @@ services:
       POSTGRES_DB: users
     ports:
       - "5432:5432"
+
   proxy:
     image: nginx
-      volumes:
-        - ./proxy:/etc/nginx:ro           #En read-only 
-      ports:
-        - "80:80"
-      depends_on:
-        - users
-        - another-microservice
+    volumes:
+      - ./proxy:/etc/nginx:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - users
+      - store

@@ -8,7 +8,9 @@
     "dev": "ts-node-dev src/Services/Users/index.ts",
     "store": "ts-node-dev src/Services/Store/index.ts",
     "user": "ts-node-dev src/Services/Users/index.ts",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "start:users": "node ./build/Users/index.js",
+    "start:store": "node ./build/Store/index.js"
   },
   "keywords": [],
   "author": "",
