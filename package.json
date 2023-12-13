@@ -11,6 +11,7 @@
     "start": "node build/index.js",
     "start:users": "node ./build/Users/index.js",
     "start:store": "node ./build/Store/index.js"
+    "match": "ts-node-dev src/Services/Match/index.ts",
   },
   "keywords": [],
   "author": "",

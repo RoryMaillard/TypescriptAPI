@@ -1,0 +1,242 @@
+openapi: 3.1.0
+info:
+  title: Match API
+  description: This is the API of the Match service
+  version: 1.0.0
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: players
+    description: Operations available to regular players
+paths:
+  /api/match:
+    get:
+      tags:
+        - admins
+      summary: get all the matches
+      description: get all the matches
+      operationId: getMatches
+      responses:
+        "200":
+          description: List of all Matches
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchList'
+  /api/match/{id}:
+    get:
+      tags:
+        - players
+      summary: get match info with id
+      description: get match info with id
+      operationId: getMatchById
+      parameters:
+        - name : id
+          in : path
+          description: Match ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Match'
+    put:
+      tags:
+        - players
+      summary: update a match
+      description: update a match
+      operationId: updateMatch
+      requestBody:
+        description: values to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        "201":
+          description: successful update
+    delete:
+      tags:
+        - admin
+      summary: delete match
+      description: delete match
+      operationId: deleteMatch
+      parameters:
+        - name: id
+          in: path
+          description: Match ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful delete
+  /api/match/{id}/rounds:
+    get:
+      tags:
+        - players
+      summary: get the list of rounds of a match
+      description: get the list of rounds of a match
+      operationId: getRoundsByMatchId
+      parameters:
+        - name: id
+          in: path
+          description: match id
+          required: true
+          schema:
+            type: int
+      responses:
+        "200":
+          description: rounds list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Round'
+  /api/match/creatematch:
+    post:
+      tags:
+        - players
+      summary: create a match
+      description: create a match
+      operationId: createMatch
+      requestBody:
+        description: match to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        "201":
+          description: successful creation
+  /api/match/createround:
+    get:
+      tags:
+        - admin
+      summary: create a round
+      description: create a round
+      operationId: createRound
+      requestBody:
+        description: round to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Round'
+      responses:
+        "201":
+          description: successful creation
+
+  /api/match/rounds/{id}:
+    get:
+      tags:
+        - players
+      summary: get round info with id
+      description: get round info with id
+      operationId: getRoundById
+      parameters:
+        - name: id
+          in: path
+          description: Round ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Round
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Round'
+  /api/match/rounds/{id}/outcome/{player1}/{player2}:
+    put:
+      tags:
+        - players
+      summary: get the outcome of a round
+      description: get the outcome of a round
+      operationId: calculateOutcome
+      parameters:
+        - name: id
+          in: path
+          description: Round ID
+          required: true
+          schema:
+            type: integer
+        - name: player1
+          in: path
+          description: player 1  ID
+          required: true
+          schema:
+            type: integer
+        - name: player2
+          in: path
+          description: player2 ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Round updated
+  /api/match/{id}/nextround:
+    put:
+      tags:
+        - players
+      summary: move to the next round of a match
+      description: move to the next round of a match
+      operationId: nextRound
+      responses:
+        "201":
+          description: successful update
+components:
+  schemas:
+    MatchList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Match'
+    Match:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        player1:
+          type: int
+          example: 1
+        player2:
+          type: int
+          example: 2
+        round1:
+          $ref: '#/components/schemas/Round'
+        round2:
+          $ref: '#/components/schemas/Round'
+        round3:
+          $ref: '#/components/schemas/Round'
+        round4:
+          $ref: '#/components/schemas/Round'
+        round5:
+          $ref: '#/components/schemas/Round'
+        winner:
+          type: int
+          example: 1
+    Round:
+      type: object
+      properties:
+        id:
+          type: int
+          example : 1
+        creaturePlayer1 :
+          type : int
+          example : 41
+        creaturePlayer2:
+          type: int
+          example: 40
+        status:
+          type: string
+          example: "Finished"
+        winner:
+          type: int
+          example : 1
