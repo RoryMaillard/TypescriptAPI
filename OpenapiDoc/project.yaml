@@ -1,0 +1,746 @@
+openapi: 3.1.0
+info:
+  title: Pokescript API
+  description: This is the API of the Pokescript application
+  version: 1.0.0
+tags:
+  - name: Users
+    description: User service endpoints
+  - name: Store
+    description: Store service endpoints
+  - name: Match
+    description: Match service endpoints
+  - name: Authentication
+    description: Authentication service endpoints
+  - name: Message
+    description: Message service endpoints
+paths:
+  /api/user:
+    get:
+      tags:
+        - Users
+      summary: get all the users
+      description: get all the users
+      operationId: getUsers
+      responses:
+        "200":
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+  /api/user/{id}:
+    get:
+      tags:
+        - Users
+      summary: get user info with id
+      description: get user info with id
+      operationId: getUserById
+      parameters:
+        - name : id
+          in : path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - Users
+      summary: add a new user
+      description: Adds a new user
+      operationId: addUser
+      requestBody:
+        description: item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User created
+    put:
+      tags:
+        - Users
+      summary: Update a user
+      description: Change values for a user
+      operationId: addUser
+      requestBody:
+        description: parameters to change
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User created
+  /api/user/{id}/username:
+    get:
+      tags:
+        - Users
+      summary: get a player's username from id
+      description: get a player's username from id
+      operationId: getUsernameById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Username
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "John"
+  /api/user/player:
+    get:
+      tags:
+        - Users
+      summary: get all the players
+      description: get all the players
+      operationId: getPlayers
+      responses:
+        "200":
+          description: List of all players
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllPlayers'
+  /api/user/player/{id}:
+    get:
+      tags:
+        - Users
+      summary: get player info with id
+      description: get player info with id
+      operationId: getPlayerById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Player info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+  /api/user/player/{id}/creatures:
+    get:
+      tags:
+        - Users
+      summary: get player creatures
+      description: get player creatures
+      operationId: getPlayerCreatures
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of player's creatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/user/player/{id}/purchasableCreatures:
+    get:
+      tags:
+        - Users
+      summary: get creatures that can be purchased by the player
+      description: get creatures that can be purchased by the player
+      operationId: getPlayerPurchasableCreatures
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of creatures that the player can purchase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/user/player/{id}/purchaseCreature/{creatureId}:
+    get:
+      tags:
+        - Users
+      summary: get creatures that can be purchased by the player
+      description: get creatures that can be purchased by the player
+      operationId: getPlayerPurchasableCreatures
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+        - name: creatureId
+          in: path
+          description: Creature ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Creature Purchased
+        "400":
+          description: Not enough credits
+  /api/store:
+    get:
+      tags:
+        - Store
+      summary: get all the creatures
+      description: get all the creatures
+      operationId: getCreatures
+      responses:
+        "200":
+          description: List of all creatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/store/{id}:
+    get:
+      tags:
+        - Store
+      summary: get creature info with id
+      description: get creature info with id
+      operationId: getCreatureById
+      parameters:
+        - name: id
+          in: path
+          description: Creature ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: creature info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Creature'
+  /api/store/creatures/{ids}:
+    get:
+      tags:
+        - Store
+      summary: get a List of creatures from a list of ids
+      description: get a List of creatures from a list of ids
+      operationId: getCreaturesById
+      parameters:
+        - name: ids
+          in: path
+          description: creature ids seperated by commas
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: creatures list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/store/purchase/{userCreaturesIds}:
+    get:
+      tags:
+        - Store
+      summary: get all the purchasable creatures based of a list of already owned creatures
+      description: get all the purchasable creatures based of a list of already owned creatures
+      operationId: getUserPurchasableCreatures
+      parameters:
+        - name: userCreaturesIds
+          in: path
+          description: creature ids seperated by commas of the creatures the user already owns
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of creatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreaturesList'
+  /api/store/purchase/{userCreaturesId}/{id}:
+    get:
+      tags:
+        - Store
+      summary: get info on one creature of the purchasable creatures
+      description: get info on one creature of the purchasable creatures
+      operationId: getUserPurchasableCreaturesById
+      parameters:
+        - name: userCreaturesIds
+          in: path
+          description: creature ids seperated by commas of the creatures the user already owns
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: creature ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: creature info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Creature'
+  /api/match:
+    get:
+      tags:
+        - Match
+      summary: get all the matches
+      description: get all the matches
+      operationId: getMatches
+      responses:
+        "200":
+          description: List of all Matches
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchList'
+  /api/match/{id}:
+    get:
+      tags:
+        - Match
+      summary: get match info with id
+      description: get match info with id
+      operationId: getMatchById
+      parameters:
+        - name: id
+          in: path
+          description: Match ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Match'
+    put:
+      tags:
+        - Match
+      summary: update a match
+      description: update a match
+      operationId: updateMatch
+      requestBody:
+        description: values to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        "201":
+          description: successful update
+    delete:
+      tags:
+        - Match
+      summary: delete match
+      description: delete match
+      operationId: deleteMatch
+      parameters:
+        - name: id
+          in: path
+          description: Match ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful delete
+  /api/match/{id}/rounds:
+    get:
+      tags:
+        - Match
+      summary: get the list of rounds of a match
+      description: get the list of rounds of a match
+      operationId: getRoundsByMatchId
+      parameters:
+        - name: id
+          in: path
+          description: match id
+          required: true
+          schema:
+            type: int
+      responses:
+        "200":
+          description: rounds list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Round'
+  /api/match/creatematch:
+    post:
+      tags:
+        - Match
+      summary: create a match
+      description: create a match
+      operationId: createMatch
+      requestBody:
+        description: match to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Match'
+      responses:
+        "201":
+          description: successful creation
+  /api/match/createround:
+    get:
+      tags:
+        - Match
+      summary: create a round
+      description: create a round
+      operationId: createRound
+      requestBody:
+        description: round to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Round'
+      responses:
+        "201":
+          description: successful creation
+
+  /api/match/rounds/{id}:
+    get:
+      tags:
+        - Match
+      summary: get round info with id
+      description: get round info with id
+      operationId: getRoundById
+      parameters:
+        - name: id
+          in: path
+          description: Round ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Round
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Round'
+  /api/match/rounds/{id}/outcome/{player1}/{player2}:
+    put:
+      tags:
+        - Match
+      summary: get the outcome of a round
+      description: get the outcome of a round
+      operationId: calculateOutcome
+      parameters:
+        - name: id
+          in: path
+          description: Round ID
+          required: true
+          schema:
+            type: integer
+        - name: player1
+          in: path
+          description: player 1  ID
+          required: true
+          schema:
+            type: integer
+        - name: player2
+          in: path
+          description: player2 ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Round updated
+  /api/match/{id}/nextround:
+    put:
+      tags:
+        - Match
+      summary: move to the next round of a match
+      description: move to the next round of a match
+      operationId: nextRound
+      responses:
+        "201":
+          description: successful
+  /api/authentication/login:
+    put:
+      tags:
+        - Authentication
+      summary: log in to the game
+      description: log in to the game
+      operationId: login
+      requestBody:
+        description: login information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        "201":
+          description: successful login
+        "400":
+          description: bad input parameter
+  /api/authentication/logout:
+    put:
+      tags:
+        - Authentication
+      summary: log out of the game
+      description: log out of the game
+      operationId: logout
+      responses:
+        "201":
+          description: successful logout
+  /api/authenticatition/signup:
+    put:
+      tags:
+        - Authentication
+      summary: sign up to the game
+      description: sign up to the game
+      operationId: sign up
+      requestBody:
+        description: sign up information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        "201":
+          description: successful signup
+        "400":
+          description: bad input parameter
+  /api/messages/inbox/{id}:
+    get:
+      tags:
+        - Message
+      summary: get messages of a user
+      description: get a user's messages
+      operationId: getUserMessagesById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: message List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageList'
+  /api/messages/{id}:
+    get:
+      tags:
+        - Message
+      summary: get a specific message
+      description: get a specific message
+      operationId: getMessageById
+      parameters:
+        - name: id
+          in: path
+          description: Message ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /api/messages/sendMessage:
+    post:
+      tags:
+        - Message
+      summary: send a message
+      description: send a message
+      operationId: sendMessage
+      requestBody:
+        description: message
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        "200":
+          description: message sent
+
+components:
+  schemas:
+    AllUsers:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        username:
+          type: string
+          example: "John"
+        password:
+          type: string
+          example: "1234567api"
+        email:
+          type: string
+          example: "john@gmail.com"
+    AllPlayers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Player'
+    Player:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        creatures:
+          type: string
+          example: "12,51,41,2,5"
+        credits:
+          type: int
+          example: 300
+        wins:
+          type: int
+          example: 12
+        loss:
+          type: int
+          example : 8
+        score:
+          type: int
+          example: 280
+        badges:
+          type: string
+          example : "1,2,3,4,5"
+    CreaturesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Creature'
+    Creature:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        name:
+          type: string
+          example: "c#"
+        hp:
+          type: int
+          example: 20
+        attack:
+          type: int
+          example: 80
+        type:
+          type: string
+          example: "Offensive"
+        price:
+          type: int
+          example: 90
+    MatchList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Match'
+    Match:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        player1:
+          type: int
+          example: 1
+        player2:
+          type: int
+          example: 2
+        round1:
+          $ref: '#/components/schemas/Round'
+        round2:
+          $ref: '#/components/schemas/Round'
+        round3:
+          $ref: '#/components/schemas/Round'
+        round4:
+          $ref: '#/components/schemas/Round'
+        round5:
+          $ref: '#/components/schemas/Round'
+        winner:
+          type: int
+          example: 1
+    Round:
+      type: object
+      properties:
+        id:
+          type: int
+          example: 1
+        creaturePlayer1:
+          type: int
+          example: 41
+        creaturePlayer2:
+          type: int
+          example: 40
+        status:
+          type: string
+          example: "Finished"
+        winner:
+          type: int
+          example: 1
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "John"
+        password:
+          type: string
+          example: "1234567api"
+    MessageList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Message'
+    Message:
+      type: object
+      properties:
+        sender:
+          type: int
+          example: 2
+        receiver:
+          type: int
+          example: 3
+        text:
+          type: string
+          example: "Hello"
+        seen:
+          type: bool
+          example: true
