@@ -2,7 +2,6 @@ import { FastifyReply, FastifyRequest } from "fastify"
 import type * as s from 'zapatos/schema'
 import * as db from 'zapatos/db'
 import pool from '../../Match/db/pgPool'
-import {matches} from "zapatos/schema";
 import axios from "axios";
 
 
@@ -27,13 +26,13 @@ export const createMatch =
         if (request.body.player2) {
             player2 = request.body.player2
         }
-        return db.sql<s.matches.SQL, s.matches.Selectable[]>`INSERT INTO matches (player1, player2, winner) VALUES (${db.param(request.body.player1)}, ${db.param(player2)}, ${db.param(null)})`
+        return db.sql<s.matches.SQL, s.matches.Selectable[]>`INSERT INTO ${"matches"} (player1, player2, winner) VALUES (${db.param(request.body.player1)}, ${db.param(player2)}, ${db.param(null)})`
             .run(pool)
     }
 export const deleteMatch =
     async (request: FastifyRequest<{Params: { id:string } }>, reply: FastifyReply) => {
         const matchId= request.params.id
-        return db.sql<s.matches.SQL, s.matches.Selectable[]>`DELETE FROM matches WHERE id = ${db.param(matchId)}`
+        return db.sql<s.matches.SQL, s.matches.Selectable[]>`DELETE FROM ${"matches"} WHERE id = ${db.param(matchId)}`
             .run(pool)
     }
 
@@ -56,84 +55,81 @@ export const getRoundsByMatchId =
 export const nextRound =
   async (request: FastifyRequest<{ Params: { id: string }}>, reply: FastifyReply) => {
     const matchId = request.params.id;
-    const match = await axios.get(`http://0.0.0.0:5002/api/match/${db.param(matchId)}`)
+    const match = await axios.get(`http://match:5002/api/match/${matchId}`)
+      console.log("1")
+      console.log(match.data.data[0])
     let winsPlayer1 = 0
     let winsPlayer2 = 0
-    if (!match.data[0]["round1"]) {
-        const round = await axios.post(`http://0.0.0.0:5002/api/match/createround`, "{'status' : 'Choosing' }")
+    if (!match.data.data[0]["round1"]) {
+        const round = await axios.post(`http://match:5002/api/match/createround`, {status : 'Choosing' })
         db.sql<s.matches.SQL, s.matches.Selectable[]>`UPDATE ${"matches"}
-                                                      SET ${"round1"} = ${db.param(round.data[0]['id'])}`
+                                                      SET ${"round1"} = ${db.param(round.data.data[0]['id'])} WHERE id = ${db.param(matchId)}`.run(pool)
     }else{
-        const round = await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round1"]}`)
-        if (round.data[0]["status"] != "Finished"){
-            await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round1"]}/outcome/${match.data[0]["player1"]}/${match.data[0]["player2"]}`)
+        const round = await axios.get(`http://match:5002/api/match/rounds/${match.data.data[0]["round1"]}`)
+        if (round.data.data[0]["status"] != "Finished"){
+            await axios.put(`http://match:5002/api/match/rounds/${match.data.data[0]["round1"]}/outcome/${match.data.data[0]["player1"]}/${match.data.data[0]["player2"]}`)
         }else{
-            if (round.data[0]["winner"] == match.data[0]["player1"]){
+            if (round.data.data[0]["winner"] == match.data.data[0]["player1"]){
                 winsPlayer1 += 1
             }else {
                 winsPlayer2 +=1
-            }
-            if (!match.data[0]["round2"]) {
-                const round = await axios.post(`http://0.0.0.0:5002/api/match/createround`, "{'status' : 'Choosing' }")
+            } if (!match.data.data[0]["round2"]) {
+                const round = await axios.post(`http://match:5002/api/match/createround`, {status : 'Choosing' })
                 db.sql<s.matches.SQL, s.matches.Selectable[]>`UPDATE ${"matches"}
-                                                      SET ${"round2"} = ${db.param(round.data[0]['id'])}`
-            }else {
-                const round = await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round2"]}`)
-                if (round.data[0]["status"] != "Finished") {
-                    await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round2"]}/outcome/${match.data[0]["player1"]}/${match.data[0]["player2"]}`)
+                                                      SET ${"round2"} = ${db.param(round.data.data[0]['id'])} WHERE id = ${db.param(matchId)}`.run(pool)
+            }else{
+                const round = await axios.get(`http://match:5002/api/match/rounds/${match.data.data[0]["round2"]}`)
+                if (round.data.data[0]["status"] != "Finished"){
+                    await axios.put(`http://match:5002/api/match/rounds/${match.data.data[0]["round2"]}/outcome/${match.data.data[0]["player1"]}/${match.data.data[0]["player2"]}`)
                 }else{
-                    if (round.data[0]["winner"] == match.data[0]["player1"]){
+                    if (round.data.data[0]["winner"] == match.data.data[0]["player1"]){
                         winsPlayer1 += 1
                     }else {
                         winsPlayer2 +=1
-                    }
-                    if (!match.data[0]["round3"]) {
-                        const round = await axios.post(`http://0.0.0.0:5002/api/match/createround`, "{'status' : 'Choosing' }")
+                    }if (!match.data.data[0]["round3"]) {
+                        const round = await axios.post(`http://match:5002/api/match/createround`, {status : 'Choosing' })
                         db.sql<s.matches.SQL, s.matches.Selectable[]>`UPDATE ${"matches"}
-                                                      SET ${"round3"} = ${db.param(round.data[0]['id'])}`
-                    }else
-                    {
-                        const round = await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round3"]}`)
-                        if (round.data[0]["status"] != "Finished") {
-                            await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round3"]}/outcome/${match.data[0]["player1"]}/${match.data[0]["player2"]}`)
+                                                      SET ${"round3"} = ${db.param(round.data.data[0]['id'])} WHERE id = ${db.param(matchId)}`.run(pool)
+                    }else{
+                        const round = await axios.get(`http://match:5002/api/match/rounds/${match.data.data[0]["round3"]}`)
+                        if (round.data.data[0]["status"] != "Finished"){
+                            await axios.put(`http://match:5002/api/match/rounds/${match.data.data[0]["round3"]}/outcome/${match.data.data[0]["player1"]}/${match.data.data[0]["player2"]}`)
                         }else{
-                            if (round.data[0]["winner"] == match.data[0]["player1"]){
+                            if (round.data.data[0]["winner"] == match.data.data[0]["player1"]){
                                 winsPlayer1 += 1
                             }else {
                                 winsPlayer2 +=1
-                            }
-                            if (!match.data[0]["round4"]) {
-                                const round = await axios.post(`http://0.0.0.0:5002/api/match/createround`, "{'status' : 'Choosing' }")
+                            }if (!match.data.data[0]["round4"]) {
+                                const round = await axios.post(`http://match:5002/api/match/createround`, {status : 'Choosing' })
                                 db.sql<s.matches.SQL, s.matches.Selectable[]>`UPDATE ${"matches"}
-                                                      SET ${"round4"} = ${db.param(round.data[0]['id'])}`
-                            }else {
-                                const round = await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round4"]}`)
-                                if (round.data[0]["status"] != "Finished") {
-                                    await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round4"]}/outcome/${match.data[0]["player1"]}/${match.data[0]["player2"]}`)
-                                }else {
-                                    if (round.data[0]["winner"] == match.data[0]["player1"]){
+                                                      SET ${"round4"} = ${db.param(round.data.data[0]['id'])} WHERE id = ${db.param(matchId)}`.run(pool)
+                            }else{
+                                const round = await axios.get(`http://match:5002/api/match/rounds/${match.data.data[0]["round2"]}`)
+                                if (round.data.data[0]["status"] != "Finished"){
+                                    await axios.put(`http://match:5002/api/match/rounds/${match.data.data[0]["round4"]}/outcome/${match.data.data[0]["player1"]}/${match.data.data[0]["player2"]}`)
+                                }else{
+                                    if (round.data.data[0]["winner"] == match.data.data[0]["player1"]){
                                         winsPlayer1 += 1
                                     }else {
                                         winsPlayer2 +=1
-                                    }
-                                    if (!match.data[0]["round5"]) {
-                                        const round = await axios.post(`http://0.0.0.0:5002/api/match/createround`, "{'status' : 'Choosing' }")
+                                    }if (!match.data.data[0]["round5"]) {
+                                        const round = await axios.post(`http://match:5002/api/match/createround`, {status : 'Choosing' })
                                         db.sql<s.matches.SQL, s.matches.Selectable[]>`UPDATE ${"matches"}
-                                                      SET ${"round5"} = ${db.param(round.data[0]['id'])}`
-                                    }else {
-                                        const round = await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round5"]}`)
-                                        if (round.data[0]["status"] != "Finished") {
-                                            await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round5"]}/outcome/${match.data[0]["player1"]}/${match.data[0]["player2"]}`)
-                                            const round = await axios.get(`http://0.0.0.0:5002/api/match/rounds/${match.data[0]["round5"]}`)
-                                            if (round.data[0]["winner"] == match.data[0]["player1"]){
+                                                      SET ${"round5"} = ${db.param(round.data.data[0]['id'])} WHERE id = ${db.param(matchId)}`.run(pool)
+                                    }else{
+                                        const round = await axios.get(`http://match:5002/api/match/rounds/${match.data.data[0]["round5"]}`)
+                                        if (round.data.data[0]["status"] != "Finished"){
+                                            await axios.put(`http://match:5002/api/match/rounds/${match.data.data[0]["round5"]}/outcome/${match.data.data[0]["player1"]}/${match.data.data[0]["player2"]}`)
+                                        }else{
+                                            if (round.data.data[0]["winner"] == match.data.data[0]["player1"]){
                                                 winsPlayer1 += 1
                                             }else {
                                                 winsPlayer2 +=1
                                             }
                                             if (winsPlayer1>winsPlayer2) {
-                                                await axios.put(`http://0.0.0.0:5002/api/match/${match.data[0]['id']}`, `{'winner': ${match.data[0]['player1']}}`)
+                                                await axios.put(`http://match:5002/api/match/${match.data[0]['id']}`, `{'winner': ${match.data[0]['player1']}}`)
                                             }else{
-                                                await axios.put(`http://0.0.0.0:5002/api/match/${match.data[0]['id']}`, `{'winner': ${match.data[0]['player2']}}`)
+                                                await axios.put(`http://match:5002/api/match/${match.data[0]['id']}`, `{'winner': ${match.data[0]['player2']}}`)
                                             }
                                         }
                                     }

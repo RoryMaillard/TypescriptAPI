@@ -34,7 +34,7 @@ export const getPlayerCreatures =
   async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
     const userId = request.params.id;
     const creaturesId =  await db.sql<s.players.SQL, s.players.Selectable[]>`SELECT creatures FROM ${"players"} WHERE id = ${db.param(userId)}`.run(pool).then((creaturesId) => ({ data: creaturesId }))
-    const apiResponse = await axios.get(`http://0.0.0.0:5001/api/store/creatures/${creaturesId.data[0]['creatures']}`)
+    const apiResponse = await axios.get(`http://store:5001/api/store/creatures/${creaturesId.data[0]['creatures']}`)
     return apiResponse.data
 }
 
@@ -42,7 +42,7 @@ export const getPlayerPurchasableCreatures =
   async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
     const userId = request.params.id;
     const creaturesId =  await db.sql<s.players.SQL, s.players.Selectable[]>`SELECT creatures FROM ${"players"} WHERE id = ${db.param(userId)}`.run(pool).then((creaturesId) => ({ data: creaturesId }))
-    const apiResponse = await axios.get(`http://0.0.0.0:5001/api/store/purchase/${creaturesId.data[0]['creatures']}`)
+    const apiResponse = await axios.get(`http://store:5001/api/store/purchase/${creaturesId.data[0]['creatures']}`)
     return apiResponse.data
 }
 export const purchaseCreature = 
@@ -50,7 +50,7 @@ export const purchaseCreature =
     const userId = request.params.id;
     const creatureId = request.params.creatureId;
     const response =  await db.sql<s.players.SQL, s.players.Selectable[]>`SELECT creatures, credits FROM ${"players"} WHERE id = ${db.param(userId)}`.run(pool).then((creaturesId) => ({ data: creaturesId }))
-    const storeResponse = await axios.get(`http://0.0.0.0:5001/api/store/purchase/${response.data[0]['creatures']}/${creatureId}`)
+    const storeResponse = await axios.get(`http://store:5001/api/store/purchase/${response.data[0]['creatures']}/${creatureId}`)
     const creature = storeResponse.data.data[0]
     console.log(creature['price'])
     console.log(response.data[0]['credits'])
