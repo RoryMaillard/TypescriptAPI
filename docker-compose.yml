@@ -1,18 +1,17 @@
 version: '3.8'
 
 services:
-  users:
+  user:
     build:
       context: .
-      dockerfile: Dockerfile.users
+      dockerfile: Dockerfile.user
     ports:
       - "5000:5000"
     volumes:
       - .:/app
     depends_on:
       - db
-      - store
-    command: npm run start:users
+    command: npm run start:user
 
   store:
     build:
@@ -25,6 +24,18 @@ services:
     depends_on:
       - db
     command: npm run start:store
+  
+  match:
+    build:
+      context: .
+      dockerfile: Dockerfile.match
+    ports:
+      - "5002:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    command: npm run start:match
 
   db:
     image: postgres:12.1-alpine
@@ -42,5 +53,6 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - users
+      - user
       - store
+      - match

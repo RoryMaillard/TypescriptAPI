@@ -3,7 +3,7 @@ import userRouter from './routes/match.router'
 import {config} from "dotenv";
 
 const port = 5002;
-//const host = '0.0.0.0';
+const host = '0.0.0.0';
 
 config({path: `.env`})
 const startServer = async () => {
@@ -16,7 +16,7 @@ const startServer = async () => {
 
 	server.register(userRouter, { prefix: '/api/match' })
 
-	await server.listen({ port }, errorHandler)
+	await server.listen({ host, port }, errorHandler)
   } catch (e) {
 	console.error(e)
   }

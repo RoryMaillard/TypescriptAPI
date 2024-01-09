@@ -36,7 +36,7 @@ async function matchRouter(fastify: FastifyInstance) {
   });
   fastify.route({
     method: 'GET',
-    url: '/rounds/:id/',
+    url: '/rounds/:id',
     handler: controllers.getRoundById,
   });
   fastify.route({
@@ -50,14 +50,24 @@ async function matchRouter(fastify: FastifyInstance) {
     handler: controllers.getMatchesByUserId,
   });
   fastify.route({
-    method: 'put',
+    method: 'PUT',
     url: '/:id/nextround',
     handler: controllers.nextRound,
   });
   fastify.route({
-    method: 'put',
+    method: 'PUT',
     url: '/:id',
     handler: controllers.updateMatch,
+  });
+  fastify.route({
+    method: 'PUT',
+    url: '/rounds/:id/player1/:creatureId',
+    handler: controllers.chooseCreaturePlayer1,
+  });
+  fastify.route({
+    method: 'PUT',
+    url: '/rounds/:id/player2/:creatureId',
+    handler: controllers.chooseCreaturePlayer2,
   });
 }
 

@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev src/Services/Users/index.ts",
+    "dev": "ts-node-dev src/Services/User/index.ts",
     "store": "ts-node-dev src/Services/Store/index.ts",
-    "user": "ts-node-dev src/Services/Users/index.ts",
-    "start": "node build/index.js",
-    "start:users": "node ./build/Users/index.js",
-    "start:store": "node ./build/Store/index.js"
+    "user": "ts-node-dev src/Services/User/index.ts",
     "match": "ts-node-dev src/Services/Match/index.ts",
+    "start": "node build/index.js",
+    "start:user": "node ./build/User/index.js",
+    "start:store": "node ./build/Store/index.js",
+    "start:match": "node ./build/Match/index.js"
+    
   },
   "keywords": [],
   "author": "",
